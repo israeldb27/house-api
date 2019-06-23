@@ -2,6 +2,10 @@ import * as mongoose from 'mongoose'
 import { Usuario } from '../../usuarios/usuarios.model';
 import { Imovel } from '../imovels.model';
 
+export interface OfertaModel extends mongoose.Model<Oferta> {
+    findByImovelAndUsuario(imovel: string, usuario: string): Promise<Oferta>
+}
+
 //Criando interface que será usado na Rota
 export interface Oferta extends mongoose.Document {
     valorOferta: number,
@@ -35,4 +39,8 @@ const ofertaSchema = new mongoose.Schema ({
    timestamps: true
  });
 
-export const Oferta = mongoose.model<Oferta>('Oferta', ofertaSchema);
+ ofertaSchema.statics.findByImovelAndUsuario = function(imovel: string, usuario: string) {
+    return this.findOne({imovel : imovel, usuarioOferta: usuario})
+ }
+
+export const Oferta = mongoose.model<Oferta, OfertaModel>('Oferta', ofertaSchema);

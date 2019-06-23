@@ -12,8 +12,26 @@ class OfertaRouter extends model_router_1.ModelRouter {
                 .then(this.renderAll(resp, next))
                 .catch(next);
         };
+        this.findByImovelAndUsuario = (req, resp, next) => {
+            if (req.query.imovel && req.query.usuario) {
+                ofertas_model_1.Oferta.findByImovelAndUsuario(req.query.imovel, req.query.usuario)
+                    .then(oferta => {
+                    if (oferta) {
+                        return oferta;
+                    }
+                    else
+                        return [];
+                })
+                    .then(this.render(resp, next))
+                    .catch(next);
+            }
+            else {
+                next();
+            }
+        };
     }
     applyRoutes(application) {
+        application.get({ path: `${this.basePath}/imovelusuario` }, this.findByImovelAndUsuario);
         application.get({ path: `${this.basePath}` }, this.findAll);
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]);
         application.post(`${this.basePath}`, [this.save]);

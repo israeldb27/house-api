@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
+/*
+    Status: { Solicitado: 'S', Fechado: 'F'}
+    StatusLeitura: { Novo: 'N', Leitura: 'L'}
+*/
 const intermediacaoSchema = new mongoose.Schema({
     usuarioSolicitante: {
         type: mongoose.Schema.Types.ObjectId,
@@ -23,4 +27,7 @@ const intermediacaoSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+intermediacaoSchema.statics.findByImovelAndUsuario = function (imovel, usuario) {
+    return this.findOne({ imovel: imovel, usuarioSolicitante: usuario });
+};
 exports.Intermediacao = mongoose.model('Intermediacao', intermediacaoSchema);

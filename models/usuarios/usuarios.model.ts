@@ -3,14 +3,27 @@ import {environment} from '../../common/environment';
 import * as bcrypt from 'bcrypt';
 
 //Criando interface que será usado na Rota
-export interface Usuario extends mongoose.Document {
+export interface Usuario extends mongoose.Document {    
     nome: string,
     email: string,
-    password: string
+    password: string,
+    perfil: string,
+    cpf: string,
+    cnpj: string,
+    creci: string,
+    descricao: string,
+    localizacao: string,
+    quantTotalImoveis: 0,
+    quantTotalContatos: 0,
+    quantTotalSeguidores: 0,
+    matches(password: string): boolean
 }
 
 export interface UsuarioModel extends mongoose.Model<Usuario> {
+
     findByEmail(email: string, projection?: string): Promise<Usuario>
+
+    findByLogin(email: string, password: string): Promise<Usuario>
 }
 
 // definindo o schema (documento do mongo) do Usuario
@@ -27,14 +40,53 @@ const usuarioSchema = new mongoose.Schema ({
     },
     password: {
         type: String,
-        select: false,
+        //select: false,
+        select: true,
         required: true
     },
     perfil: {
         type: String,
         required: true
+    },
+    cpf: {
+        type: String,
+        required: false
+    },
+    cnpj: {
+        type: String,
+        required: false
+    },
+    creci: {
+        type: String,
+        required: false
+    },
+    descricao: {
+        type: String,
+        required: false
+    },
+    localizacao: {
+        type: String,
+        required: false
+    },
+    quantTotalImoveis: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    quantTotalContatos: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    quantTotalSeguidores: {
+        type: Number,
+        required: false,
+        default: 0
     }
-})
+},
+{
+   timestamps: true
+ });
 
 //INICIO -  definindo os middlewares 
 
@@ -72,6 +124,11 @@ const hashPassword = (obj, next) => {
 // metodo estatico do Documento para buscar por email
 usuarioSchema.statics.findByEmail = function(email: string, projection: string){
     return this.findOne({email}, projection) //{email: email}
+}
+
+
+usuarioSchema.methods.matches = function(password: string): boolean {
+    return bcrypt.compareSync(password, this.password)
 }
 
 usuarioSchema.pre('save', saveMiddleware)

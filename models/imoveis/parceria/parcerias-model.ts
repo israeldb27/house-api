@@ -11,9 +11,12 @@ export interface Parceria extends mongoose.Document {
     obs: string
 }
 
+export interface ParceriaModel extends mongoose.Model<Parceria> {
+    findByImovelAndUsuario(imovel: string, usuario: string): Promise<Parceria>
+}
+
 /*
-    Status: { Solicitado: 'S', Fechado: 'F'}
-    
+    Status: { Solicitado: 'S', Fechado: 'F'}    
     StatusLeitura: { Novo: 'N', Leitura: 'L'}
 */
 const parceriaSchema = new mongoose.Schema ({
@@ -44,4 +47,8 @@ const parceriaSchema = new mongoose.Schema ({
    timestamps: true
  });
 
-export const Parceria = mongoose.model<Parceria>('Parceria', parceriaSchema);
+ parceriaSchema.statics.findByImovelAndUsuario = function(imovel: string, usuario: string) {
+    return this.findOne({imovel : imovel, usuarioSolicitante: usuario})
+ }
+
+export const Parceria = mongoose.model<Parceria, ParceriaModel>('Parceria', parceriaSchema);

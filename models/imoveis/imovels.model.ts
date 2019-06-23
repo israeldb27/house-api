@@ -35,6 +35,10 @@ export interface Imovel extends mongoose.Document {
     quantTotalOfertas: number
 }
 
+export interface ImovelModel extends mongoose.Model<Imovel> {
+    findByUsuario(usuario: string): Promise<Imovel>
+}
+
 
 // definindo o schema (documento do mongo) do Usuario
 const imovelSchema = new mongoose.Schema ({
@@ -176,4 +180,8 @@ const imovelSchema = new mongoose.Schema ({
     timestamps: true
   });
 
-export const Imovel = mongoose.model<Imovel>('Imovel', imovelSchema)
+imovelSchema.statics.findByUsuario = function(usuario: string){
+    return this.find({usuario}).populate('usuario', ['nome','perfil'])  
+}  
+
+export const Imovel = mongoose.model<Imovel, ImovelModel>('Imovel', imovelSchema)

@@ -28,6 +28,12 @@ class ModelRouter extends router_1.Router {
                 .then(this.renderAll(resp, next, { page, count, pageSize: this.pageSize, url: req.url }))
                 .catch(next));
         };
+        this.findAllv2 = (req, resp, next) => {
+            this.model.count({}).exec()
+                .then(count => this.model.find()
+                .then(this.render(resp, next))
+                .catch(next));
+        };
         this.findById = (req, resp, next) => {
             this.prepareOne(this.model.findById(req.params.id))
                 .then(this.render(resp, next))

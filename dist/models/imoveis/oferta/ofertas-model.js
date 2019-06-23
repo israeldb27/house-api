@@ -24,4 +24,7 @@ const ofertaSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+ofertaSchema.statics.findByImovelAndUsuario = function (imovel, usuario) {
+    return this.findOne({ imovel: imovel, usuarioOferta: usuario });
+};
 exports.Oferta = mongoose.model('Oferta', ofertaSchema);

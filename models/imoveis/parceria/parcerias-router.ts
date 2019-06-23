@@ -18,7 +18,26 @@ class ParceriaRouter extends ModelRouter<Parceria> {
             .catch(next)
     }
 
+    findByImovelAndUsuario = (req, resp, next) => {
+        if (req.query.imovel && req.query.usuario){
+            Parceria.findByImovelAndUsuario(req.query.imovel, req.query.usuario)             
+                    .then(parceria => {
+                        if (parceria){
+                            return parceria
+                        }
+                        else 
+                            return []
+                    })                    
+                    .then(this.render(resp, next))
+                    .catch(next)
+        }
+        else {
+            next()
+        }
+    }
+
     applyRoutes(application: restify.Server){
+        application.get({path:`${this.basePath}/imovelusuario`}, this.findByImovelAndUsuario)   
         application.get({path:`${this.basePath}`}, this.findAll)    
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]) 
         application.post(`${this.basePath}`, [this.save]) 

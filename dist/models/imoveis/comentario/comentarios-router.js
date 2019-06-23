@@ -12,8 +12,26 @@ class ComentarioRouter extends model_router_1.ModelRouter {
                 .then(this.renderAll(resp, next))
                 .catch(next);
         };
+        this.findByImovel = (req, resp, next) => {
+            if (req.query.imovel) {
+                comentarios_model_1.Comentario.findByIdImovel(req.query.imovel)
+                    .then(comentario => {
+                    if (comentario) {
+                        return [comentario];
+                    }
+                    else
+                        return [];
+                })
+                    .then(this.renderAll(resp, next))
+                    .catch(next);
+            }
+            else {
+                next();
+            }
+        };
     }
     applyRoutes(application) {
+        application.get({ path: `${this.basePath}/imovel` }, this.findByImovel);
         application.get({ path: `${this.basePath}` }, this.findAll);
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]);
         application.post(`${this.basePath}`, [this.save]);

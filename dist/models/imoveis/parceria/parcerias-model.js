@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = require("mongoose");
 /*
     Status: { Solicitado: 'S', Fechado: 'F'}
-    
     StatusLeitura: { Novo: 'N', Leitura: 'L'}
 */
 const parceriaSchema = new mongoose.Schema({
@@ -32,4 +31,7 @@ const parceriaSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+parceriaSchema.statics.findByImovelAndUsuario = function (imovel, usuario) {
+    return this.findOne({ imovel: imovel, usuarioSolicitante: usuario });
+};
 exports.Parceria = mongoose.model('Parceria', parceriaSchema);

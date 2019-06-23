@@ -9,6 +9,10 @@ export interface Comentario extends mongoose.Document {
     imovel:  mongoose.Types.ObjectId |Imovel
 }
 
+export interface ComentarioModel extends mongoose.Model<Comentario> {
+    findByIdImovel(imovel: string): Promise<Comentario>
+}
+
 const comentarioSchema = new mongoose.Schema ({
     comentario: {
         type: String,
@@ -29,4 +33,8 @@ const comentarioSchema = new mongoose.Schema ({
    timestamps: true
  });
 
-export const Comentario = mongoose.model<Comentario>('Comentario', comentarioSchema);
+ comentarioSchema.statics.findByIdImovel = function(imovel: string){
+    return this.find({imovel}).populate('usuarioComentario', ['nome','perfil'])  
+ }
+
+export const Comentario = mongoose.model<Comentario, ComentarioModel>('Comentario', comentarioSchema);

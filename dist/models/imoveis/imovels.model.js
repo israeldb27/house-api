@@ -139,4 +139,7 @@ const imovelSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+imovelSchema.statics.findByUsuario = function (usuario) {
+    return this.find({ usuario }).populate('usuario', ['nome', 'perfil']);
+};
 exports.Imovel = mongoose.model('Imovel', imovelSchema);

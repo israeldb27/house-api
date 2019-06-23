@@ -18,7 +18,26 @@ class ComentarioRouter extends ModelRouter<Comentario> {
             .catch(next)
     }
 
+    findByImovel = (req, resp, next) => {
+        if (req.query.imovel){
+            Comentario.findByIdImovel(req.query.imovel)             
+                    .then(comentario => {
+                        if (comentario){
+                            return [comentario]
+                        }
+                        else 
+                            return []
+                    })                    
+                    .then(this.renderAll(resp, next))
+                    .catch(next)
+        }
+        else {
+            next()
+        }
+    }
+
     applyRoutes(application: restify.Server){
+        application.get({path:`${this.basePath}/imovel`}, this.findByImovel)  
         application.get({path:`${this.basePath}`}, this.findAll)    
         application.get(`${this.basePath}/:id`, [this.validateId, this.findById]) 
         application.post(`${this.basePath}`, [this.save]) 

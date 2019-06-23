@@ -19,4 +19,7 @@ const comentarioSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+comentarioSchema.statics.findByIdImovel = function (imovel) {
+    return this.find({ imovel }).populate('usuarioComentario', ['nome', 'perfil']);
+};
 exports.Comentario = mongoose.model('Comentario', comentarioSchema);

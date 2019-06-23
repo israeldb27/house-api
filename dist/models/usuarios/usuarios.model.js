@@ -17,13 +17,51 @@ const usuarioSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        select: false,
+        //select: false,
+        select: true,
         required: true
     },
     perfil: {
         type: String,
         required: true
+    },
+    cpf: {
+        type: String,
+        required: false
+    },
+    cnpj: {
+        type: String,
+        required: false
+    },
+    creci: {
+        type: String,
+        required: false
+    },
+    descricao: {
+        type: String,
+        required: false
+    },
+    localizacao: {
+        type: String,
+        required: false
+    },
+    quantTotalImoveis: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    quantTotalContatos: {
+        type: Number,
+        required: false,
+        default: 0
+    },
+    quantTotalSeguidores: {
+        type: Number,
+        required: false,
+        default: 0
     }
+}, {
+    timestamps: true
 });
 //INICIO -  definindo os middlewares 
 // middleware nos metodos PUT e PATCH - para quando o password for modificado
@@ -57,6 +95,9 @@ const hashPassword = (obj, next) => {
 // metodo estatico do Documento para buscar por email
 usuarioSchema.statics.findByEmail = function (email, projection) {
     return this.findOne({ email }, projection); //{email: email}
+};
+usuarioSchema.methods.matches = function (password) {
+    return bcrypt.compareSync(password, this.password);
 };
 usuarioSchema.pre('save', saveMiddleware);
 usuarioSchema.pre('findOneAndUpdate', updateMiddleware);
