@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/restify-errors": "^4.3.2",
-    "bcrypt": "1.0.3",
+    "bcrypt": "5.0.0",
     "jsonwebtoken": "8.1.1",
     "mongoose": "4.13.9",
     "nodemon": "^1.18.8",
